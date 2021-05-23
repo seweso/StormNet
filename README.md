@@ -1,5 +1,5 @@
 # StormNet
-Telemetry reader/writer for StormWorks
+Telemetry writer (to csv) for StormWorks
 
 # Installation
 
