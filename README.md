@@ -1,5 +1,5 @@
 # StormNet
-Telemetry reader/writer
+Telemetry reader/writer for StormWorks
 
 # Installation
 
@@ -8,3 +8,7 @@ Telemetry reader/writer
 3. Start cmd in that folder
 4. Run StormNet.exe
 
+# Stormworks
+
+1. Grab the microcontroller from here: https://steamcommunity.com/sharedfiles/filedetails/?id=2493895336
+2. Settings are pretty self explanatory, or just msg me
