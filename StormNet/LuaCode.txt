@@ -63,7 +63,7 @@ function onTick()
 			fields = fields .. "&" .. fieldName .. "=" .. input.getNumber(i)
 		end
 	
-		async.httpGet(18146, "/?filename=" .. filename .. "&tick="..tick.. "&newFile=" .. tostring(newFile) .. fields)
+		async.httpGet(18146, "/?filename=" .. filename .. "&newFile=" .. tostring(newFile) .. fields)
 		newFile = false
 	end
 end
