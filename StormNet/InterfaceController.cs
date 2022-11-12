@@ -56,14 +56,15 @@ namespace StormNet
             var qrGenerator = new QRCodeGenerator();
             var qrCodeData = qrGenerator.CreateQrCode(href, QRCodeGenerator.ECCLevel.L);
             var rawBytes = qrCodeData.GetRawData(QRCodeData.Compression.Uncompressed);
-            var base64StringRaw = Convert.ToBase64String(rawBytes);
+            var base64StringRaw = Convert.ToBase64String(rawBytes).
+                Replace('+', '@').Replace('/', '~');
             return Ok(base64StringRaw);
         }
         
         [HttpGet("/controller")]
         public async Task<IActionResult> Controller([FromQuery]IDictionary<string, string> query)
         {
-            return Ok("storm.net.ok");
+            return Ok("storm.net.data:" + query["data"]);
         }
         
         
