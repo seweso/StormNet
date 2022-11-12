@@ -1,0 +1,3 @@
+[submodule "StormNet/wwwroot/PonyEditor"]
+	path = StormNet/wwwroot/PonyEditor
+	url = https://gitlab.com/stormworks-tools/editor.git
