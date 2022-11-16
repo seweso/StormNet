@@ -67,7 +67,7 @@ namespace StormNet
         public async Task<IActionResult> Controller([FromQuery]IDictionary<string, string> query)
         {
             // Incoming data from Stormworks > controllers
-            _dataProxy.UpdateFromStormworks(query["data"]);
+            await _dataProxy.UpdateFromStormworks(query["data"]);
 
             // Send back data from controllers > Stormworks
             var data = _dataProxy.GetForStormworks();

@@ -10,6 +10,7 @@ namespace StormNet
 
         public SignalRHub(DataProxy dataProxy)
         {
+            Console.WriteLine("connected?");
             _dataProxy = dataProxy;
         }
         public async Task SendMessage(string message)

@@ -29,19 +29,20 @@ function onTick()
 	-- Read 
 	if string.len(dataBytes) > 0 then
 		for i=1,32,1 do 
-			local v = string.unpack(">d", dataBytes, i * 8 - 7)
+			local v = string.unpack("<d", dataBytes, i * 8 - 7)
 			output.setNumber(i, v)
 		end
 	end
 
 	-- Write 
 	local g = input.getNumber
-	local inputBytes = string.pack(">dddddddddddddddddddddddddddddddd", 
+	local inputBytes = string.pack("<dddddddddddddddddddddddddddddddd", 
 	  	g(1),g(2),g(3),g(4),g(5),g(6),g(7),g(8),g(9),g(10),
 	  	g(11),g(12),g(13),g(14),g(15),g(16),g(17),g(18),g(19),g(20), 
 	  	g(21),g(22),g(23),g(24),g(25),g(26),g(27),g(28),g(29),g(30), 
 	  	g(31),g(32)
 	  	)
+
 	local inputBase64 = enc(inputBytes)
 	async.httpGet(18146, "/controller?data=" .. inputBase64)
 end
@@ -76,7 +77,7 @@ function httpReply(port, request_body, response_body)
 	if string.starts(response_body, "storm.net.data:") then
 		sending = false
 		local dataBase64 = string.sub(response_body, 16, -1)
-		print(dataBase64)
+		--print(dataBase64)
 		dataBytes = dec(dataBase64)
 		return
 	end
