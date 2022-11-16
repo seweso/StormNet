@@ -19,6 +19,7 @@ namespace StormNet
         {
             services.AddControllers();
             services.AddSingleton<DataHandler>();
+            services.AddSingleton<DataProxy>();
             services.AddSignalR();
         }
 

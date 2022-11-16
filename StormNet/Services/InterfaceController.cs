@@ -15,12 +15,14 @@ namespace StormNet
     [Route("Get")]
     [ApiController]
     public class InterfaceController : ControllerBase
-    {
+    {   
         private readonly DataHandler _dataHandler;
+        private readonly DataProxy _dataProxy;
 
-        public InterfaceController(DataHandler dataHandler)
+        public InterfaceController(DataHandler dataHandler, DataProxy dataProxy)
         {
             _dataHandler = dataHandler;
+            _dataProxy = dataProxy;
         }
 
         [HttpGet("/")]
@@ -64,7 +66,13 @@ namespace StormNet
         [HttpGet("/controller")]
         public async Task<IActionResult> Controller([FromQuery]IDictionary<string, string> query)
         {
-            return Ok("storm.net.data:" + query["data"]);
+            // Incoming data from Stormworks > controllers
+            _dataProxy.UpdateFromStormworks(query["data"]);
+
+            // Send back data from controllers > Stormworks
+            var data = _dataProxy.GetForStormworks();
+            
+            return Ok("storm.net.data:" + data);
         }
         
         
