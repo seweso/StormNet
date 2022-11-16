@@ -19,6 +19,7 @@ namespace StormNet
         {
             services.AddControllers();
             services.AddSingleton<DataHandler>();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -32,6 +33,10 @@ namespace StormNet
             app.UseStaticFiles();
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<SignalRHub>("/signalR");
+            });
         }
     }
 }
