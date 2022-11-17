@@ -10,14 +10,11 @@ namespace StormNet
 
         public SignalRHub(DataProxy dataProxy)
         {
-            Console.WriteLine("connected?");
             _dataProxy = dataProxy;
         }
-        public async Task SendMessage(string message)
+        public async Task UpdateFromPony(int index, double value)
         {
-            Console.WriteLine(message);
-
-            await Clients.All.SendAsync("ReceiveMessage",  "From stormnet.net");
+            _dataProxy.UpdateFromPony(index, value);
         }
     }
 }
