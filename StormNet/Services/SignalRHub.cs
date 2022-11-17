@@ -6,15 +6,36 @@ namespace StormNet
 {
     public class SignalRHub : Hub
     {
-        private readonly DataProxy _dataProxy;
+        private readonly DataOrchestrator _orchestrator;
 
-        public SignalRHub(DataProxy dataProxy)
+        public SignalRHub(DataOrchestrator orchestrator)
         {
-            _dataProxy = dataProxy;
+            _orchestrator = orchestrator;
         }
+
+        public override Task OnConnectedAsync()
+        {
+            Console.WriteLine("Connected {0}", Context.ConnectionId);
+            return base.OnConnectedAsync();
+        }
+
+        public async Task SetToken(string token)
+        {
+            Console.WriteLine("Token {0}", token);
+            _orchestrator.AddClient(Context.ConnectionId, token);
+        }
+        
+        public override Task OnDisconnectedAsync(Exception exception)
+        {
+            Console.WriteLine("Disconnected {0}", Context.ConnectionId);
+            _orchestrator.RemoveClient(Context.ConnectionId);
+            return base.OnDisconnectedAsync(exception);
+        }
+
         public async Task UpdateFromPony(int index, double value)
         {
-            _dataProxy.UpdateFromPony(index, value);
+            _orchestrator.UpdateFromPony(Context.ConnectionId, index, value);
         }
     }
+  
 }

@@ -20,7 +20,19 @@ namespace StormNet
             services.AddControllers();
             services.AddSingleton<DataHandler>();
             services.AddSingleton<DataProxy>();
+            services.AddSingleton<DataOrchestrator>();
             services.AddSignalR();
+
+            // Add ability to get any service lazy
+            services.AddTransient(typeof(Lazy<>), typeof(Lazier<>));
+        }
+        
+        internal class Lazier<T> : Lazy<T> where T : class
+        {
+            public Lazier(IServiceProvider provider)
+                : base(provider.GetRequiredService<T>)
+            {
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

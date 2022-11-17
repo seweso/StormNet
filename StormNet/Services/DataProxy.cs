@@ -7,20 +7,19 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace StormNet
 {
-    public class DataProxy
+    public class DataProxy 
     {
-        private readonly IHubContext<SignalRHub> _hubcontext;
-
         // Stormwork > Pony
         private readonly List<double?> _doublesFromStormwork = new ();
 
         // Pony > Stormworks
         private readonly double[] _doublesFromPony = new double[32];
-        
-        public DataProxy(IHubContext<SignalRHub> hubcontext)
+        private DataOrchestrator _orchestrator;
+
+        public DataProxy(DataOrchestrator orchestrator)
         {
-            _hubcontext = hubcontext;
-            
+            _orchestrator = orchestrator;
+
             // Initialize with 32 nulls 
             for (var i = 0; i < 32; i++)
             {
@@ -41,10 +40,8 @@ namespace StormNet
 
                 if (newD != oldD)
                 {
-                    // Send to Controllers (TODO: Refactor to own class)
-                    await _hubcontext.Clients.All.SendAsync("GetDouble",  i, newD);
+                    await _orchestrator.Send(i, newD);
                 }
-
                 _doublesFromStormwork[i] = newD;
             }
         }
