@@ -55,8 +55,7 @@ namespace StormNet
             var qrGenerator = new QRCodeGenerator();
             var qrCodeData = qrGenerator.CreateQrCode(href, QRCodeGenerator.ECCLevel.L);
             var rawBytes = qrCodeData.GetRawData(QRCodeData.Compression.Uncompressed);
-            var base64StringRaw = Convert.ToBase64String(rawBytes).
-                Replace('+', '@').Replace('/', '~');
+            var base64StringRaw = rawBytes.ToUrlX();
             return Ok(base64StringRaw);
         }
         

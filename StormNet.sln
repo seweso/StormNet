@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StormNet", "StormNet\StormNet.csproj", "{52528BBE-923C-426B-A54F-0D761A92DC64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StormNetTests", "StormNetTests\StormNetTests.csproj", "{0BA87C44-A8CE-48F4-895F-DD95FEF8F36D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{52528BBE-923C-426B-A54F-0D761A92DC64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52528BBE-923C-426B-A54F-0D761A92DC64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52528BBE-923C-426B-A54F-0D761A92DC64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BA87C44-A8CE-48F4-895F-DD95FEF8F36D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BA87C44-A8CE-48F4-895F-DD95FEF8F36D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BA87C44-A8CE-48F4-895F-DD95FEF8F36D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BA87C44-A8CE-48F4-895F-DD95FEF8F36D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

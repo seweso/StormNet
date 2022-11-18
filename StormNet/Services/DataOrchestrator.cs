@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using StormNet.Model;
 
 namespace StormNet
 {
     public class DataOrchestrator
     {
-        private readonly Dictionary<string, string> _connections = new ();
+        private readonly Dictionary<string, StormToken> _connections = new ();
 
         private readonly IHubContext<SignalRHub> _hubcontext;
         private readonly Lazy<DataProxy> _dataProxy;
@@ -20,15 +21,16 @@ namespace StormNet
         
         public async Task Send(int i, double newD)
         {
-            foreach (var connection in _connections)
+            foreach (var (connectionId, token) in _connections)
             {
-                await _hubcontext.Clients.Client(connection.Key).SendAsync("GetDouble", i, newD);  
+                // Test if index can be send, and transform index... based on token
+                await _hubcontext.Clients.Client(connectionId).SendAsync("GetDouble", i, newD);  
             }
         }
         
         public void AddClient(string contextConnectionId, string token)
         {
-            _connections[contextConnectionId] = token;
+            _connections[contextConnectionId] = token.FromEncodedString<StormToken>();
         }
 
         public void RemoveClient(string contextConnectionId)

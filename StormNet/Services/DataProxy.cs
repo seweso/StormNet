@@ -30,8 +30,7 @@ namespace StormNet
         public async Task UpdateFromStormworks(string data)
         {
             // Read bytes
-            var bytes = Convert.FromBase64String(data
-                .Replace('@', '+').Replace('~', '/'));
+            var bytes = data.FromUrlX();
 
             for (var i = 0; i < 32; i++)
             {
@@ -50,8 +49,7 @@ namespace StormNet
         {
             var bytes = new byte[_doublesFromPony.Length * sizeof(double)];
             Buffer.BlockCopy(_doublesFromPony, 0, bytes, 0, bytes.Length);
-            return Convert.ToBase64String(bytes).
-                Replace('+', '@').Replace('/', '~');
+            return bytes.ToUrlX();
         }
 
         public void UpdateFromPony(int index, double value)
