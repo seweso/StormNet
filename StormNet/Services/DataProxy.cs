@@ -39,7 +39,7 @@ namespace StormNet
 
                 if (newD != oldD)
                 {
-                    await _orchestrator.Send(i, newD);
+                    await _orchestrator.SendToPony(i, newD);
                 }
                 _doublesFromStormwork[i] = newD;
             }

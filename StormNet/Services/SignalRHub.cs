@@ -22,7 +22,7 @@ namespace StormNet
         public async Task SetToken(string token)
         {
             Console.WriteLine("Token {0}", token);
-            _orchestrator.AddClient(Context.ConnectionId, token);
+            await _orchestrator.AddClient(Context.ConnectionId, token);
         }
         
         public override Task OnDisconnectedAsync(Exception exception)
@@ -34,7 +34,7 @@ namespace StormNet
 
         public async Task UpdateFromPony(int index, double value)
         {
-            _orchestrator.UpdateFromPony(Context.ConnectionId, index, value);
+            _orchestrator.SendToStormworks(Context.ConnectionId, index, value);
         }
     }
   

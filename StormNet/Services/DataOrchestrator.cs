@@ -19,28 +19,36 @@ namespace StormNet
             _hubcontext = hubcontext;
         }
         
-        public async Task Send(int i, double newD)
+        public async Task AddClient(string contextConnectionId, string tokenString)
+        {
+            var token = tokenString.FromEncodedString<StormToken>();
+            _connections[contextConnectionId] = token;
+            
+            // Send First value
+            var (index, value) = token.GetFirstValue();
+            await _hubcontext.Clients.Client(contextConnectionId).SendDoubleToPony(index, value);
+        }
+        
+        public async Task SendToPony(int index, double newD)
         {
             foreach (var (connectionId, token) in _connections)
             {
                 // Test if index can be send, and transform index... based on token
-                await _hubcontext.Clients.Client(connectionId).SendAsync("GetDouble", i, newD);  
+                await token.StormWorksToPony(index + 1, newD, _hubcontext.Clients.Client(connectionId).SendDoubleToPony);
             }
         }
         
-        public void AddClient(string contextConnectionId, string token)
+        public void SendToStormworks(string contextConnectionId, int index, double value)
         {
-            _connections[contextConnectionId] = token.FromEncodedString<StormToken>();
+            _connections[contextConnectionId]
+                .PonyToStormworks(index, value, _dataProxy.Value.UpdateFromPony);
         }
-
+        
         public void RemoveClient(string contextConnectionId)
         {
             _connections.Remove(contextConnectionId);
         }
 
-        public void UpdateFromPony(string contextConnectionId, int index, double value)
-        {
-            _dataProxy.Value.UpdateFromPony(index, value);
-        }
+
     }
 }

@@ -12,8 +12,8 @@ namespace TestProject1
         {
             var token = new StormToken
             {
-                InputRange = new []{4,76},
-                OutputRange = new []{54,665},
+                ToStormworksIndexes = new []{4,76},
+                ToPonyIndexes = new []{54,665},
             };
 
             var toString = token.ToEncodedString();
@@ -22,8 +22,8 @@ namespace TestProject1
             
             Assert.Equal(toString, toString2);
             Assert.Equal("CAQITBA2EJkF", toString);
-            Assert.Equal(token.InputRange, fromString.InputRange);
-            Assert.Equal(token.OutputRange, fromString.OutputRange);
+            Assert.Equal(token.ToStormworksIndexes, fromString.ToStormworksIndexes);
+            Assert.Equal(token.ToPonyIndexes, fromString.ToPonyIndexes);
         }
         
         [Fact]
@@ -31,11 +31,27 @@ namespace TestProject1
         {
             var token = new StormToken
             {
-                InputRange = new []{1,8},
-                OutputRange = new []{1,8},
+                ToPonyFirstValue = 1,
+                ToPonyStartIndex = 7, 
+                ToPonyIndexes = new []{1,2,3,4,5,6,7,8},
+                ToStormWorksStartIndex = 1,
+                ToStormworksIndexes = new []{1,2,3,4,5,6,7,8},
             };
             var toString = token.ToEncodedString();
-            Assert.Equal("CAEICBABEAg=", toString);
+            Assert.Equal("CAEIAggDCAQIBQgGCAcICBABEAIQAxAEEAUQBhAHEAgYASAHKAE=", toString);
+
+            var toString2 = new StormToken(1, 4).ToEncodedString();
+            Assert.Equal(toString, toString2);
+
+            Assert.Equal(-1, token.IndexToPony(0));
+            Assert.Equal(8, token.IndexToPony(1));
+            Assert.Equal(15, token.IndexToPony(8));
+            Assert.Equal(-1, token.IndexToPony(9));
+            
+            Assert.Equal(-1, token.IndexToStormworks(0));
+            Assert.Equal(1, token.IndexToStormworks(1));
+            Assert.Equal(8, token.IndexToStormworks(8));
+            Assert.Equal(-1, token.IndexToStormworks(9));
         }
         
         [Fact]
@@ -43,11 +59,27 @@ namespace TestProject1
         {
             var token = new StormToken
             {
-                InputRange = new []{9,16},
-                OutputRange = new []{9,16},
+                ToPonyFirstValue = 2,
+                ToPonyStartIndex = 7, 
+                ToPonyIndexes = new []{9,10,11,12,13,14,15,16},
+                ToStormWorksStartIndex = 1,
+                ToStormworksIndexes = new []{9,10,11,12,13,14,15,16},
             };
             var toString = token.ToEncodedString();
-            Assert.Equal("CAkIEBAJEBA=", toString);
+            Assert.Equal("CAkICggLCAwIDQgOCA8IEBAJEAoQCxAMEA0QDhAPEBAYASAHKAI=", toString);
+            
+            var toString2 = new StormToken(2, 4).ToEncodedString();
+            Assert.Equal(toString, toString2);
+            
+            Assert.Equal(-1, token.IndexToPony(7));
+            Assert.Equal(8, token.IndexToPony(9));
+            Assert.Equal(15, token.IndexToPony(16));
+            Assert.Equal(-1, token.IndexToPony(17));
+            
+            Assert.Equal(-1, token.IndexToStormworks(0));
+            Assert.Equal(9, token.IndexToStormworks(1));
+            Assert.Equal(16, token.IndexToStormworks(8));
+            Assert.Equal(-1, token.IndexToStormworks(9));
         }
         
         [Fact]
@@ -55,11 +87,27 @@ namespace TestProject1
         {
             var token = new StormToken
             {
-                InputRange = new []{17,24},
-                OutputRange = new []{17,24},
+                ToPonyFirstValue = 3,
+                ToPonyStartIndex = 7, 
+                ToPonyIndexes = new []{17,18,19,20,21,22,23,24},
+                ToStormWorksStartIndex = 1,
+                ToStormworksIndexes = new []{17,18,19,20,21,22,23,24},    
             };
             var toString = token.ToEncodedString();
-            Assert.Equal("CBEIGBAREBg=", toString);
+            Assert.Equal("CBEIEggTCBQIFQgWCBcIGBAREBIQExAUEBUQFhAXEBgYASAHKAM=", toString);
+            
+            var toString2 = new StormToken(3, 4).ToEncodedString();
+            Assert.Equal(toString, toString2);
+            
+            Assert.Equal(-1, token.IndexToPony(16));
+            Assert.Equal(8, token.IndexToPony(17));
+            Assert.Equal(15, token.IndexToPony(24));
+            Assert.Equal(-1, token.IndexToPony(25));
+            
+            Assert.Equal(-1, token.IndexToStormworks(0));
+            Assert.Equal(17, token.IndexToStormworks(1));
+            Assert.Equal(24, token.IndexToStormworks(8));
+            Assert.Equal(-1, token.IndexToStormworks(9));
         }
         
         [Fact]
@@ -67,11 +115,27 @@ namespace TestProject1
         {
             var token = new StormToken
             {
-                InputRange = new []{25,32},
-                OutputRange = new []{25,32},
+                ToPonyFirstValue = 4,
+                ToPonyStartIndex = 7, 
+                ToPonyIndexes = new []{25,26,27,28,29,30,31,32},
+                ToStormWorksStartIndex = 1,
+                ToStormworksIndexes = new []{25,26,27,28,29,30,31,32},
             };
             var toString = token.ToEncodedString();
-            Assert.Equal("CBkIIBAZECA=", toString);
+            Assert.Equal("CBkIGggbCBwIHQgeCB8IIBAZEBoQGxAcEB0QHhAfECAYASAHKAQ=", toString); 
+            
+            var toString2 = new StormToken(4, 4).ToEncodedString();
+            Assert.Equal(toString, toString2);
+            
+            Assert.Equal(-1, token.IndexToPony(24));
+            Assert.Equal(8, token.IndexToPony(25));
+            Assert.Equal(15, token.IndexToPony(32));
+            Assert.Equal(-1, token.IndexToPony(33));
+            
+            Assert.Equal(-1, token.IndexToStormworks(0));
+            Assert.Equal(25, token.IndexToStormworks(1));
+            Assert.Equal(32, token.IndexToStormworks(8));
+            Assert.Equal(-1, token.IndexToStormworks(9));
         }
     }
 }

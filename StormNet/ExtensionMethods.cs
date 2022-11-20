@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 using ProtoBuf;
 using StormNet.Model;
 
@@ -26,6 +28,13 @@ namespace StormNet
         {
             return Convert.FromBase64String(urlData
                 .Replace('@', '+').Replace('~', '/'));
+        }
+
+        // TODO: Is this function at the right spot?
+        public static async Task SendDoubleToPony(this IClientProxy proxy, int index, double d)
+        {
+            // TODO: Rename GetDouble to SendDoubleToPony
+            await proxy.SendAsync("GetDouble", index, d);
         }
         
         public static T FromEncodedString<T>(this string urlEncodedString)
