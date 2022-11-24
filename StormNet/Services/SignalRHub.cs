@@ -32,10 +32,16 @@ namespace StormNet
             return base.OnDisconnectedAsync(exception);
         }
 
-        public async Task UpdateFromPony(int index, double value)
+        public async Task UpdateDoubleFromPony(int index, double value)
         {
-            _orchestrator.SendToStormworks(Context.ConnectionId, index, value);
+            _orchestrator.SendDoubleToStormworks(Context.ConnectionId, index, value);
         }
+        
+        public async Task UpdateBoolFromPony(int index, bool value)
+        {
+            _orchestrator.SendBoolToStormworks(Context.ConnectionId, index, value);
+        }
+
     }
   
 }

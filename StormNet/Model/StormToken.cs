@@ -62,7 +62,7 @@ namespace StormNet.Model
         }
         
 
-        public async Task StormWorksToPony(int index, double newD, Func<int, double, Task> send)
+        public async Task SendToPony<T>(int index, T newD, Func<int, T, Task> send)
         {
             var toPonyIndex = IndexToPony(index);
             if (toPonyIndex >= 0)
@@ -71,7 +71,7 @@ namespace StormNet.Model
             }
         }
 
-        public void PonyToStormworks(int index, double newD, Action<int, double> send)
+        public void SendToStormworks<T>(int index, T newD, Action<int, T> send)
         {
             var toStormworksIndex = IndexToStormworks(index);
             if (toStormworksIndex >= 0)

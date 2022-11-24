@@ -8,8 +8,8 @@ qrCodePlayer = ""
 dataBytes = ""
 
 function onTick()
-	output.setBool(1, connected)
-	output.setBool(2, responseError)		
+	--output.setBool(1, connected)
+	--output.setBool(2, responseError)		
 		
 	if (sending) then
 		return
@@ -32,19 +32,34 @@ function onTick()
 			local v = string.unpack("<d", dataBytes, i * 8 - 7)
 			output.setNumber(i, v)
 		end
+		for i=1,32,1 do 
+			local v = string.unpack("<b", dataBytes, 32 * 8 - 7 + i + 7)
+			output.setBool(i, v==1)
+		end
 	end
 
 	-- Write 
 	local g = input.getNumber
-	local inputBytes = string.pack("<dddddddddddddddddddddddddddddddd", 
-	  	g(1),g(2),g(3),g(4),g(5),g(6),g(7),g(8),g(9),g(10),
-	  	g(11),g(12),g(13),g(14),g(15),g(16),g(17),g(18),g(19),g(20), 
-	  	g(21),g(22),g(23),g(24),g(25),g(26),g(27),g(28),g(29),g(30), 
-	  	g(31),g(32)
+	local b = getBoolAsByte
+	local inputBytes = string.pack("<ddddddddddddddddddddddddddddddddbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", 
+	  	g(1),g(2),g(3),g(4),g(5),g(6),g(7),g(8),g(9),g(10),g(11),g(12),g(13),g(14),g(15),g(16),
+	  	g(17),g(18),g(19),g(20),g(21),g(22),g(23),g(24),g(25),g(26),g(27),g(28),g(29),g(30),g(31),g(32),
+  		b(1),b(2),b(3),b(4),b(5),b(6),b(7),b(8),b(9),b(10),b(11),b(12),b(13),b(14),b(15),b(16),
+	  	b(17),b(18),b(19),b(20),b(21),b(22),b(23),b(24),b(2),b(26),b(27),b(28),b(29),b(30),b(31),b(32)	  
 	  	)
 
 	local inputBase64 = enc(inputBytes)
 	async.httpGet(18146, "/controller?data=" .. inputBase64)
+end
+
+
+function getBoolAsByte(index)
+	local bool = input.getBool(index)
+	if (bool) then
+		return 1
+	else
+		return 0
+	end
 end
 
 function httpReply(port, request_body, response_body)

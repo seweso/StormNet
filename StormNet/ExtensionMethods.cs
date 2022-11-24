@@ -30,12 +30,17 @@ namespace StormNet
                 .Replace('@', '+').Replace('~', '/'));
         }
 
-        // TODO: Is this function at the right spot?
+        // TODO: Move to SignalR class
         public static async Task SendDoubleToPony(this IClientProxy proxy, int index, double d)
         {
-            // TODO: Rename GetDouble to SendDoubleToPony
-            await proxy.SendAsync("GetDouble", index, d);
+            await proxy.SendAsync("SetDouble", index, d);
         }
+        
+        public static async Task SendBoolToPony(this IClientProxy proxy, int index, bool b)
+        {
+            await proxy.SendAsync("SetBool", index, b);
+        }
+        
         
         public static T FromEncodedString<T>(this string urlEncodedString)
         {

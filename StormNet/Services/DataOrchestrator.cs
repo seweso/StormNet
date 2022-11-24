@@ -29,20 +29,34 @@ namespace StormNet
             await _hubcontext.Clients.Client(contextConnectionId).SendDoubleToPony(index, value);
         }
         
-        public async Task SendToPony(int index, double newD)
+        public async Task SendDoubleToPony(int index, double newD)
         {
             foreach (var (connectionId, token) in _connections)
             {
-                // Test if index can be send, and transform index... based on token
-                await token.StormWorksToPony(index + 1, newD, _hubcontext.Clients.Client(connectionId).SendDoubleToPony);
+                await token.SendToPony(index + 1, newD, _hubcontext.Clients.Client(connectionId).SendDoubleToPony);
             }
         }
         
-        public void SendToStormworks(string contextConnectionId, int index, double value)
+        public async Task SendBoolToPony(int index, bool newB)
+        {
+            foreach (var (connectionId, token) in _connections)
+            {
+                await token.SendToPony(index + 1, newB, _hubcontext.Clients.Client(connectionId).SendBoolToPony);
+            }
+        }
+        
+        public void SendDoubleToStormworks(string contextConnectionId, int index, double value)
         {
             _connections[contextConnectionId]
-                .PonyToStormworks(index, value, _dataProxy.Value.UpdateFromPony);
+                .SendToStormworks(index, value, _dataProxy.Value.UpdateDoubleFromPony);
         }
+
+        public void SendBoolToStormworks(string contextConnectionId, int index, bool value)
+        {
+            _connections[contextConnectionId]
+                .SendToStormworks(index, value, _dataProxy.Value.UpdateBoolFromPony);
+        }
+       
         
         public void RemoveClient(string contextConnectionId)
         {

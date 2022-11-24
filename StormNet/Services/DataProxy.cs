@@ -11,10 +11,13 @@ namespace StormNet
     {
         // Stormwork > Pony
         private readonly List<double?> _doublesFromStormwork = new ();
+        private readonly List<bool?> _boolsFromStormwork = new ();
 
         // Pony > Stormworks
         private readonly double[] _doublesFromPony = new double[32];
-        private DataOrchestrator _orchestrator;
+        private readonly byte[] _boolsFromPony = new byte[32];
+        
+        private readonly DataOrchestrator _orchestrator;
 
         public DataProxy(DataOrchestrator orchestrator)
         {
@@ -24,6 +27,7 @@ namespace StormNet
             for (var i = 0; i < 32; i++)
             {
                 _doublesFromStormwork.Add(null);
+                _boolsFromStormwork.Add(null);
             }
         }
         
@@ -31,7 +35,8 @@ namespace StormNet
         {
             // Read bytes
             var bytes = data.FromUrlX();
-
+            
+            // Read doubles
             for (var i = 0; i < 32; i++)
             {
                 var newD = BitConverter.ToDouble(bytes, i * 8);
@@ -39,22 +44,43 @@ namespace StormNet
 
                 if (newD != oldD)
                 {
-                    await _orchestrator.SendToPony(i, newD);
+                    await _orchestrator.SendDoubleToPony(i, newD);
                 }
                 _doublesFromStormwork[i] = newD;
+            }
+
+            // Read booleans
+            for (var i = 0; i < 32; i++)
+            {
+                var newB = bytes[32 * 8 + i] == 1;
+                var oldB = _boolsFromStormwork[i];
+
+                if (newB != oldB)
+                {
+                    await _orchestrator.SendBoolToPony(i, newB);
+                }
+                _boolsFromStormwork[i] = newB;
             }
         }
 
         public string GetForStormworks()
         {
-            var bytes = new byte[_doublesFromPony.Length * sizeof(double)];
-            Buffer.BlockCopy(_doublesFromPony, 0, bytes, 0, bytes.Length);
+            var bytes = new byte[_doublesFromPony.Length * sizeof(double) + 
+                                 _boolsFromPony.Length * sizeof(byte)];
+            
+            Buffer.BlockCopy(_doublesFromPony, 0, bytes, 0, _doublesFromPony.Length * sizeof(double));
+            Buffer.BlockCopy(_boolsFromPony, 0, bytes, 32 * 8, _boolsFromPony.Length * sizeof(byte));
             return bytes.ToUrlX();
         }
 
-        public void UpdateFromPony(int index, double value)
+        public void UpdateDoubleFromPony(int index, double value)
         {
             _doublesFromPony[index - 1] = value;
+        }
+        
+        public void UpdateBoolFromPony(int index, bool value)
+        {
+            _boolsFromPony[index - 1] = (byte)(value ? 1 : 0);
         }
     }
 

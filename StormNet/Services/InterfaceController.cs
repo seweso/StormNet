@@ -67,7 +67,7 @@ namespace StormNet
 
             // Send back data from controllers > Stormworks
             var data = _dataProxy.GetForStormworks();
-            
+
             return Ok("storm.net.data:" + data);
         }
         
