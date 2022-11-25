@@ -41,7 +41,7 @@ end
 
 -- Draw function that will be executed when this script renders to a screen
 function onDraw()
-	if #qrCodePlayer > 0 then
+	if connected then
 		screen.setColor(255,255,255,230)
 		screen.drawRectF(2,2,83,53)
 		screen.setColor(0,0,0,255)

@@ -62,6 +62,12 @@ namespace StormNet
         [HttpGet("/controller")]
         public async Task<IActionResult> Controller([FromQuery]IDictionary<string, string> query)
         {
+            return Ok("storm.net.data:" + query["playerNr"]);
+        }
+        
+        [HttpGet("/data")]
+        public async Task<IActionResult> Data([FromQuery]IDictionary<string, string> query)
+        {
             // Incoming data from Stormworks > controllers
             await _dataProxy.UpdateFromStormworks(query["data"]);
 

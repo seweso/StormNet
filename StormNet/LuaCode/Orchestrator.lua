@@ -6,7 +6,6 @@ connected = false
 sending = false
 response = "..."
 responseError = false
-qrCodePlayer = ""
 dataBytes = ""
 
 function onTick()
@@ -28,11 +27,6 @@ function onTick()
 		stormGet("/?startup=true")
 		return
 	end
-	
-	if qrCodePlayer == "" then
-		stormGet("/qrcode?href=http://[ipAddress]:18146/controller?player=1")
-		return
-	end	
 
 	-- Read bytes from stormnet into outputs
 	if string.len(dataBytes) > 0 then
@@ -53,7 +47,7 @@ function onTick()
 	  	)
 
 	local inputBase64 = base64X.enc(inputBytes)
-	stormGet("/controller?data=" .. inputBase64)
+	stormGet("/data?data=" .. inputBase64)
 end
 
 -- Draw function that will be executed when this script renders to a screen
@@ -63,11 +57,7 @@ function onDraw()
 	screen.setColor(0,0,0,255)
 
 	if connected then
-		screen.drawTextBox(5,5,80,50, "Scan QR code with phone to start controller.")
-		
-		if #qrCodePlayer > 0 then
-			renderQrCode(qrCodePlayer, -1, -1, 1)
-		end
+		screen.drawTextBox(5,5,80,50, "Doing stuff...")
 	else
 		screen.drawTextBox(5,5,80,50, "StormNet not detected, scan QRcode for installation, and run Application.")
 		renderQrCode(qrCodeBytes, -1, -1, 1)
@@ -95,12 +85,6 @@ function httpReply(port, request_body, response_body)
 
 	if string.starts(response_body, "storm.net.ok") then
 		sending = false
-		return
-	end
-	
-	if string.starts(response_body, "UVJSA") then
-		sending = false
-		qrCodePlayer = base64X.dec(response_body)
 		return
 	end
 	
