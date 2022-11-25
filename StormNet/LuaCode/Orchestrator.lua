@@ -1,7 +1,7 @@
 ﻿-- Used to read/write Composite data to/from Stormnet and mobile controllers
 
 rateLimit = property.getNumber("RateLimit")
-requestNr = rateLimit
+requestNr = 0
 connected = false
 sending = false
 response = "..."
