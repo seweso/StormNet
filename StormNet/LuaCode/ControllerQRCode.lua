@@ -1,65 +1,58 @@
-﻿-- Used to read/write Composite data to/from Stormnet and mobile controllers
+﻿-- Used to show QrCode to open mobile controller 
 
+playerNr=math.floor(property.getNumber("PlayerNr"))
+nrOfPlayers=math.floor(property.getNumber("NrOfPlayers"))
+
+rateLimit = property.getNumber("RateLimit")
+requestNr = rateLimit
 connected = false
 sending = false
 response = "..."
 responseError = false
 qrCodePlayer = ""
-dataBytes = ""
 
 function onTick()
+	-- Rate limiter for requests
+	if (requestNr < rateLimit) then
+		requestNr = requestNr + 1
+		return
+	end
+	requestNr = 0
+
+	-- Check if sending (to prevent building a queue of requests)
 	if (sending) then
 		return
 	end	
 	sending = true	
 	
+	-- Connection test
 	if not connected then
 		stormGet("/?startup=true")
 		return
 	end
 	
-	if qrCodePlayer == "" then
-		stormGet("/qrcode?href=http://[ipAddress]:18146/controller?player=1")
+	-- Load QRcode
+	if #qrCodePlayer == 0 then
+		local url = "http://[ipAddress]:18146/controller?playerNr=" .. playerNr .. "&nrOfPlayers=" .. nrOfPlayers
+		stormGet("/qrcode?href=" .. urlencode(url))
 		return
 	end	
-
-	-- Read bytes from stormnet into outputs
-	if string.len(dataBytes) > 0 then
-		for i=1,32,1 do 
-			output.setNumber(i, string.unpack("<d", dataBytes, i * 8 - 7))
-			output.setBool(i, string.unpack("<b", dataBytes, 32 * 8 + i)==1)
-		end
-	end
-
-	-- Write numbers / bools to bytes > url > stormnet
-	local g = input.getNumber
-	local b = getBoolAsByte
-	local inputBytes = string.pack("<ddddddddddddddddddddddddddddddddbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", 
-	  	g(1),g(2),g(3),g(4),g(5),g(6),g(7),g(8),g(9),g(10),g(11),g(12),g(13),g(14),g(15),g(16),
-	  	g(17),g(18),g(19),g(20),g(21),g(22),g(23),g(24),g(25),g(26),g(27),g(28),g(29),g(30),g(31),g(32),
-  		b(1),b(2),b(3),b(4),b(5),b(6),b(7),b(8),b(9),b(10),b(11),b(12),b(13),b(14),b(15),b(16),
-	  	b(17),b(18),b(19),b(20),b(21),b(22),b(23),b(24),b(2),b(26),b(27),b(28),b(29),b(30),b(31),b(32)	  
-	  	)
-
-	local inputBase64 = base64X.enc(inputBytes)
-	stormGet("/controller?data=" .. inputBase64)
 end
 
 -- Draw function that will be executed when this script renders to a screen
 function onDraw()
-	screen.setColor(255,255,255,230)
-	screen.drawRectF(2,2,83,53)
-	screen.setColor(0,0,0,255)
-
-	if connected then
-		screen.drawTextBox(5,5,80,50, "Scan QR code with phone to start controller.")
+	if #qrCodePlayer > 0 then
+		screen.setColor(255,255,255,230)
+		screen.drawRectF(2,2,83,53)
+		screen.setColor(0,0,0,255)
+		screen.drawTextBox(5,5,80,50, "Player " .. playerNr .. ". Scan QR code with phone to start controller.")
 		
 		if #qrCodePlayer > 0 then
 			renderQrCode(qrCodePlayer, -1, -1, 1)
 		end
 	else
-		screen.drawTextBox(5,5,80,50, "StormNet not detected, scan QRcode for installation, and run Application.")
-		renderQrCode(qrCodeBytes, -1, -1, 1)
+		screen.setColor(255,0,0,150)
+		screen.drawRectF(0,0,999,99)
 	end
 end
 
@@ -93,15 +86,20 @@ function httpReply(port, request_body, response_body)
 		return
 	end
 	
-	if string.starts(response_body, "storm.net.data:") then
-		sending = false
-		local dataBase64 = string.sub(response_body, 16, -1)
-		dataBytes = base64X.dec(dataBase64)
-		return
-	end
-	
 	connected = false
 	sending = false
+end
+
+
+-- Encode an url
+function urlencode(url)
+  if url == nil then
+    return
+  end
+  url = url:gsub("\n", "\r\n")
+  url = url:gsub("([^%w ])", function (c) return string.format("%%%02X", string.byte(c))end)
+  url = url:gsub(" ", "+")
+  return url
 end
 
 
@@ -177,8 +175,6 @@ function base64Module(chars)local n,g,e={'','==','='},string.gsub,string.sub;ret
 -- Initialize Module
 base64X=base64Module('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@~')
 
--- Qrcode for installing StormNet --> Github
-qrCodeBase64 = "UVJSACUAAAAAAAAAAAAAAAAAAAAAAAAA~q87@AQT5xBALrgqugF11pXQC6mvLoBBGu0EA~qqr@AABTwAAPK99OgFCXvcQC7fCUwBY8BNEA7@voYAUu3JHAI7UejgDApz8gAT6njQA84ZC4AhqdroACsvx0AHqn7@AABwxHwD@AvrQBBHwRgAuhBPsAXUrK5ALrK6SgEFWBqgD@sL4QAAAAAAAAAAAAAAAAAAAAAAAAAA"
-qrCodeBytes = base64X.dec(qrCodeBase64)
+
 
 

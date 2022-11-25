@@ -1,5 +1,7 @@
 ﻿-- Used to read/write Composite data to/from Stormnet and mobile controllers
 
+rateLimit = property.getNumber("RateLimit")
+requestNr = rateLimit
 connected = false
 sending = false
 response = "..."
@@ -8,11 +10,20 @@ qrCodePlayer = ""
 dataBytes = ""
 
 function onTick()
+	-- Rate limiter
+	if (requestNr < rateLimit) then
+		requestNr = requestNr + 1
+		return
+	end
+	requestNr = 0
+
+	-- Check if sending (to prevent building a queue of requests)
 	if (sending) then
 		return
 	end	
 	sending = true	
 	
+	-- Connection test
 	if not connected then
 		stormGet("/?startup=true")
 		return
