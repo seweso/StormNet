@@ -49,6 +49,10 @@ namespace StormNet
                 _doublesFromStormwork[i] = newD;
             }
 
+            // Backwards compability with old script (without bools)
+            if (bytes.Length <= 32 * 8)
+                return;
+
             // Read booleans
             for (var i = 0; i < 32; i++)
             {
