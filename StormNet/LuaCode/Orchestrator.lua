@@ -1,7 +1,7 @@
 ﻿-- Used to read/write Composite data to/from Stormnet and mobile controllers
 
 rateLimit = property.getNumber("RateLimit")
-requestNr = 0
+requestNr = rateLimit
 connected = false
 sending = false
 response = "..."
@@ -31,8 +31,11 @@ function onTick()
 	-- Read bytes from stormnet into outputs
 	if string.len(dataBytes) > 0 then
 		for i=1,32,1 do 
-			output.setNumber(i, string.unpack("<d", dataBytes, i * 8 - 7))
-			output.setBool(i, string.unpack("<b", dataBytes, 32 * 8 + i)==1)
+		    local doubleValue = string.unpack("<d", dataBytes, i * 8 - 7)
+			output.setNumber(i, doubleValue)
+			
+			local boolValue = string.unpack("<b", dataBytes, 32 * 8 + i)==1
+			output.setBool(i, boolValue)
 		end
 	end
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using QRCoder;
+using StormNet.Model;
 
 namespace StormNet
 {
@@ -62,7 +63,8 @@ namespace StormNet
         [HttpGet("/controller")]
         public async Task<IActionResult> Controller([FromQuery]IDictionary<string, string> query)
         {
-            return Ok("storm.net.data:" + query["playerNr"]);
+            var token = new StormToken(Convert.ToInt32(query["playerNr"]), Convert.ToInt32(query["nrOfPlayers"])).ToEncodedString();
+            return Redirect("http://192.168.1.54:18146/PonyEditor/index.html?id=7U4oK6fmUN&bigmonitor=true&SignalR_Url=http%3A%2F%2F192.168.1.54%3A18146%2FsignalR&SignalR_Token=" + token);
         }
         
         [HttpGet("/data")]
