@@ -43,6 +43,24 @@ namespace StormNet.Model
         {
         }
 
+        private bool Equals(StormToken other)
+        {
+            return ToPonyIndexes[0] == other?.ToPonyIndexes[0];
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((StormToken)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return ToPonyStartIndex;
+        }
+
         /// <summary>
         /// Create token for player (1 of 4 etc)
         /// </summary>
@@ -113,6 +131,15 @@ namespace StormNet.Model
                 return -1;
 
             return ToStormworksIndexes[i-1];
+        }
+
+        public void ResetValues(Action<int, double> updateDoublesToStormwork, Action<int, bool> updateBoolsToStormwork)
+        {
+            foreach (var i in ToStormworksIndexes)
+            {
+                updateDoublesToStormwork(i, 0);
+                updateBoolsToStormwork(i, false);
+            }
         }
     }
 }

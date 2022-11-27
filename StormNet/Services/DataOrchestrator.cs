@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using StormNet.Model;
@@ -60,7 +61,14 @@ namespace StormNet
         
         public void RemoveClient(string contextConnectionId)
         {
+            var token = _connections[contextConnectionId];
             _connections.Remove(contextConnectionId);
+
+            // All connections closed for token
+            if (!_connections.Values.Any(x => x.Equals(token)))
+            {
+                token.ResetValues(_dataProxy.Value.UpdateDoubleFromPony, _dataProxy.Value.UpdateBoolFromPony);
+            }
         }
 
 
