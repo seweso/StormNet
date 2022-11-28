@@ -1,5 +1,5 @@
-﻿-- MobileController.lua Mobile controlle for phone
--- 
+﻿-- MobileController.lua Mobile controller for phone
+-- https://lua.flaffipony.rocks/?id=wzSGQ3dsy9
 
 i2sliderv={x=39,y=33,w=25,h=91,v=0.5}
 i9sliderh={x=120,y=108,w=137,h=33,v=0.5}
