@@ -1,4 +1,4 @@
-﻿-- Used to write CsvValues to disk
+﻿-- CsvWriter.lua Used to write CsvValues to disk
 
 first = true
 send = false

@@ -1,4 +1,6 @@
-﻿-- Used to read/write Composite data to/from Stormnet and mobile controllers
+﻿-- Orchestrator.lua Used to read/write Composite data to/from Stormnet and mobile controllers
+-- https://lua.flaffipony.rocks/?id=hVPuDiZTBa
+
 
 rateLimit = property.getNumber("RateLimit")
 requestNr = rateLimit
