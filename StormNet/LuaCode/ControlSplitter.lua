@@ -12,7 +12,13 @@ response = "..."
 responseError = false
 qrCodePlayer = ""
 
+playerConnected = false
+
 function onTick()
+	-- Load inputs
+	playerConnected = input.getBool(1)
+
+
 	-- Rate limiter for requests
 	if (requestNr < rateLimit) then
 		requestNr = requestNr + 1
@@ -23,35 +29,45 @@ function onTick()
 	-- Check if sending (to prevent building a queue of requests)
 	if (sending) then
 		return
-	end	
-	sending = true	
-	
+	end
+	sending = true
+
 	-- Connection test
 	if not connected then
 		stormGet("/?startup=true")
 		return
 	end
-	
+
 	-- Load QRcode
 	if #qrCodePlayer == 0 then
 		local url = "http://[ipAddress]:18146/controller?playerNr=" .. playerNr .. "&nrOfPlayers=" .. nrOfPlayers
 		stormGet("/qrcode?href=" .. urlencode(url))
 		return
-	end	
+	end
 end
 
 -- Draw function that will be executed when this script renders to a screen
 function onDraw()
 	if connected then
-		screen.setColor(255,255,255,230)
-		screen.drawRectF(2,2,83,53)
-		screen.setColor(0,0,0,255)
-		screen.drawTextBox(5,5,80,50, "Player " .. playerNr .. ". Scan QR code with phone to start controller.")
-		
-		if #qrCodePlayer > 0 then
-			renderQrCode(qrCodePlayer, -1, -1, 1)
+		if playerConnected then
+			-- Show player nr
+			screen.setColor(255,255,255,230)
+			screen.drawRectF(0,0,5,6)
+			screen.setColor(0,0,0,255)
+			screen.drawTextBox(0,0,6,6, playerNr)
+		else
+			-- Show QR code 
+			screen.setColor(255,255,255,230)
+			screen.drawRectF(2,2,83,53)
+			screen.setColor(0,0,0,255)
+			screen.drawTextBox(5,5,80,50, "Player " .. playerNr .. ". Scan QR code with phone to start controller.")
+
+			if #qrCodePlayer > 0 then
+				renderQrCode(qrCodePlayer, -1, -1, 1)
+			end
 		end
 	else
+		-- Not connected
 		screen.setColor(255,0,0,150)
 		screen.drawRectF(0,0,999,99)
 	end
@@ -63,15 +79,15 @@ end
 function httpReply(port, request_body, response_body)
 	response = response_body
 	responseError = false
-	
+
 	if response_body == "storm.net.connected" then
 		connected = true
 		sending = false
 		return
 	end
-	
+
 	if string.starts(response_body, "storm.net.error") then
-		responseError = true	
+		responseError = true
 		sending = false
 		return
 	end
@@ -80,13 +96,13 @@ function httpReply(port, request_body, response_body)
 		sending = false
 		return
 	end
-	
+
 	if string.starts(response_body, "UVJSA") then
 		sending = false
 		qrCodePlayer = base64X.dec(response_body)
 		return
 	end
-	
+
 	connected = false
 	sending = false
 end
@@ -94,13 +110,13 @@ end
 
 -- Encode an url
 function urlencode(url)
-  if url == nil then
-    return
-  end
-  url = url:gsub("\n", "\r\n")
-  url = url:gsub("([^%w ])", function (c) return string.format("%%%02X", string.byte(c))end)
-  url = url:gsub(" ", "+")
-  return url
+	if url == nil then
+		return
+	end
+	url = url:gsub("\n", "\r\n")
+	url = url:gsub("([^%w ])", function (c) return string.format("%%%02X", string.byte(c))end)
+	url = url:gsub(" ", "+")
+	return url
 end
 
 
@@ -123,8 +139,8 @@ end
 
 -- Check if strings starts with a string
 function string.starts(String,Start)
-   return string.sub(String,1,string.len(Start))==Start
-end	
+	return string.sub(String,1,string.len(Start))==Start
+end
 
 
 -- Draw qr bytes starting at h,v, with pixel width p
@@ -132,7 +148,7 @@ function renderQrCode(bytes, h, v, p)
 	local qrSize = string.unpack(">b", bytes, 5)
 	local x = 0
 	local y = 0
-	
+
 	if (h < 0) then
 		h = screen.getWidth() - qrSize + h + 1
 	end
@@ -141,7 +157,7 @@ function renderQrCode(bytes, h, v, p)
 	end
 
 	-- Loop through bytes
-	for i = 6,#bytes,1 do 
+	for i = 6,#bytes,1 do
 		local byte = string.unpack(">b", bytes, i)
 
 		-- Loop through bits
@@ -150,16 +166,16 @@ function renderQrCode(bytes, h, v, p)
 				screen.setColor(0,0,0,255)
 			else
 				screen.setColor(255,255,255,255)
-			end		
-			screen.drawRectF(h+x*p,v+y*p,p,p)	
+			end
+			screen.drawRectF(h+x*p,v+y*p,p,p)
 			x = x + 1
 			if (x >= qrSize) then
 				x = 0
 				y = y + 1
-			end			
+			end
 			if (y >= qrSize) then
 				return
-			end		
+			end
 		end
 	end
 end
@@ -175,7 +191,4 @@ function base64Module(chars)local n,g,e={'','==','='},string.gsub,string.sub;ret
 
 -- Initialize Module
 base64X=base64Module('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@~')
-
-
-
 
