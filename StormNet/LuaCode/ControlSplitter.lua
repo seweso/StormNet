@@ -1,8 +1,11 @@
 ﻿-- ControlSplitter.lua Used to show QrCode to open mobile controller 
 -- https://lua.flaffipony.rocks/?id=A_c75TCh6-
 
-playerNr=math.floor(property.getNumber("PlayerNr"))
-nrOfPlayers=math.floor(property.getNumber("NrOfPlayers"))
+playerNr = math.floor(property.getNumber("PlayerNr"))
+nrOfPlayers = math.floor(property.getNumber("NrOfPlayers"))
+inputCount = math.floor(32 / nrOfPlayers)
+startIndex = math.floor((playerNr - 1)  * inputCount)
+playerConnected = false
 
 rateLimit = property.getNumber("RateLimit")
 requestNr = rateLimit
@@ -12,12 +15,17 @@ response = "..."
 responseError = false
 qrCodePlayer = ""
 
-playerConnected = false
 
 function onTick()
 	-- Load inputs
-	playerConnected = input.getBool(1)
+	playerConnected = input.getBool(startIndex + 1)
 
+	-- Transpose inputs to outputs
+	for iOutput=1,inputCount,1 do
+		local iInput = iOutput + startIndex
+		output.setBool(iOutput, input.getBool(iInput))
+		output.setNumber(iOutput, input.getNumber(iInput))
+	end
 
 	-- Rate limiter for requests
 	if (requestNr < rateLimit) then
