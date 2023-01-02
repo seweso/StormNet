@@ -1,5 +1,5 @@
--- MobileController.lua Mobile controller for phone
--- https://lua.flaffipony.rocks/?id=wzSGQ3dsy9
+-- MobileController.lua Test Mobile controller for phone/stormworks
+-- https://lua.flaffipony.rocks/?id=X1qORUm3lD
 
 i2sliderv={x=39,y=33,w=25,h=91,v=0.5}
 i9sliderh={x=120,y=108,w=137,h=33,v=0.5}
@@ -66,7 +66,7 @@ end
 screen.drawRectF(0,0,999,999)
 
 -- Draw checkerbox
-setC(0,0,0)
+setC(0,100,100)
 for y = 0, 50, 1 do
   for x = 0, 100, 1 do
 	if (x + y) % 2 == 0 then
