@@ -19,8 +19,7 @@ namespace StormNet
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder
-                    .UseUrls("http://localhost:18146")
-                    .UseUrls("http://0.0.0.0:18146")
+                    .UseUrls("http://localhost:18146","http://0.0.0.0:18146","https://localhost:18147","https://0.0.0.0:18147")                    
                     .UseStartup<Startup>(); });
     }
 }
