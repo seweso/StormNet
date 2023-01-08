@@ -43,6 +43,7 @@ namespace StormNet
                 .AllowAnyHeader()
                 .AllowAnyOrigin()); // allow credentials
             app.UseDeveloperExceptionPage();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
