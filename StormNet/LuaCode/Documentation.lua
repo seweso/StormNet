@@ -31,5 +31,5 @@ function onDraw()
 	end
 
 	screen.setColor(0,255,0)
-	screen.drawTextBox(0,0,screen.getWidth(),screen.getHeight(), "Yes this is an app writen in Stormworks lua. Do with that as you like :)\n\nYou can load your own script by creating and sharing one on https://lua.flaffipony.rocks/ and changing ?id=xxxx here in the url.\n\nMulti-touch works different than stormworks, variables can be loaded via the url and this has websocket/signalR support (so it can communicate with Storm.Net). ")
+	screen.drawTextBox(0,0,screen.getWidth(),screen.getHeight(), "Yes this is an app written in Stormworks lua. Do with that as you like :)\n\nYou can load your own script by creating and sharing one on https://lua.flaffipony.rocks/ and changing ?id=xxxx here in the url.\n\nMulti-touch works different than stormworks, variables can be loaded via the url and this has websocket/signalR support (so it can communicate with Storm.Net). ")
 end
